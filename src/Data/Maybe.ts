@@ -6,6 +6,9 @@ interface MaybeHOK extends HOK{
 }
 
 export abstract class Maybe<T> implements Monad<MaybeHOK,T>{
+    return(val: T):Maybe<T>{
+        return new Just(val)
+    }
     fmap <B>(f: (v: T) => B):Maybe<B>{
         if(this instanceof Just){
             return new Just(f(this.value))

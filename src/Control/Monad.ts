@@ -1,7 +1,12 @@
 import { Applicative } from "./Applicative";
 import { HOK, Kind } from "../HOK";
 
+export interface MonadHOK<M extends HOK> extends HOK{
+    readonly type:Monad<M,this["_A"]>
+}
+
 export interface Monad<M extends HOK,T> extends Applicative<M,T>{
+    return:(val:T)=>Kind<M,T>
     // >>=
     bind:<A>(f: (val: T) => Kind<M,A>)=> Kind<M,A>;
 
