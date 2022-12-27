@@ -1,0 +1,40 @@
+interface Message{
+    message_text:string;
+}
+
+class EndOfInputMessage implements Message{
+    message_text: string;
+    constructor(){
+        this.message_text = "Unexpected end of input"
+    }
+}
+
+class Expected implements Message{
+    message_text: string;
+    constructor(expected_value:string){
+        this.message_text = expected_value
+    }
+}
+
+class Unexpected implements Message{
+    message_text: string;
+    constructor(unexpected_value:string){
+        this.message_text = unexpected_value
+    }
+}
+
+class ParseError{
+    message: string;
+    constructor(messages:Message[]){
+        let expected_msg = messages.filter(message=>message instanceof Expected).map(msg=>msg.message_text).join(" or ")
+        let unexpected_msg = messages.filter(message=>message instanceof Unexpected).map(msg=>msg.message_text).join(" or ")
+        let EOI_msg = messages.filter(message=>message instanceof EndOfInputMessage).map(msg=>msg.message_text)
+
+        this.message = ""
+        if(EOI_msg.length > 1){
+            this.message = EOI_msg[0] + ", Expected: " + expected_msg
+        }else{
+            this.message = "Unexpected: " + unexpected_msg + ", Expected: " + expected_msg
+        }
+    }
+}
