@@ -18,6 +18,15 @@ export class Parser<T>{
         this.unParse = (input:State)=> runParser(input.clone())
     }
 
+    fmap<A>(func:(v:T)=>A){
+        return new Parser(input => {
+            return doEither(()=>{
+                let [state,val] = this.unParse(input).get()
+                return createPS(state,func(val))
+            })
+        })
+    }
+
     /*    
     many():Parser<T[]>{
         return many(this)
