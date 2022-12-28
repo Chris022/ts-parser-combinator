@@ -11,6 +11,7 @@ export class State{
         return this.unconsumed.substring(0,length)
     }
     consume(length:number):string{
+        this.position += length
         let consumed_text = this.unconsumed.substring(0,length)
         this.consumed += consumed_text
         this.unconsumed = this.unconsumed.substring(length)
