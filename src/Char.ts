@@ -57,4 +57,3 @@ let string = (text:string)  => new Parser<string>(input => {
     return createPE([new Expected(text)])
 })
 
-console.log(noneOf("abc").runParser(new State("apfel")))
