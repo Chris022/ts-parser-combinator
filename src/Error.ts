@@ -25,7 +25,7 @@ export class Unexpected implements Message{
 
 export class ParseError{
     message: string;
-    constructor(messages:Message[]){
+    constructor(public messages:Message[]){
         let expected_msg = messages.filter(message=>message instanceof Expected).map(msg=>msg.message_text).join(" or ")
         let unexpected_msg = messages.filter(message=>message instanceof Unexpected).map(msg=>msg.message_text).join(" or ")
         let EOI_msg = messages.filter(message=>message instanceof EndOfInputMessage).map(msg=>msg.message_text)
