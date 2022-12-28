@@ -44,6 +44,52 @@ export class Parser<T>{
         })
     }
 
+    many():Parser<T[]>{
+        return new Parser(input => {
+            let state = input
+            let matches = []
+            while(true){
+                let res = this.unParse(state)
+                if(res.isLeft()) break;
+                let [new_state,value] = res.value as [State,T]
+                state = new_state
+                matches.push(value)
+            }
+            return createPS(state,matches)
+        })
+    }
+
+    manyc():Parser<string>{
+        return new Parser(input => {
+            let state = input
+            let matches = ""
+            while(true){
+                let res = this.unParse(state)
+                if(res.isLeft()) break;
+                let [new_state,value] = res.value as [State,T]
+                state = new_state
+                matches += value
+            }
+            return createPS(state,matches)
+        })
+    }
+
+    many1():Parser<T[]>{
+        return doParser(s=>{
+            let res1 = this.parse(s)
+            let res2 = this.many().parse(s)
+            return [res1,...res2]
+        })
+    }
+
+    manyc1():Parser<string>{
+        return doParser(s=>{
+            let res1 = this.parse(s)
+            let res2 = this.manyc().parse(s)
+            return res1 + res2
+        })
+    }
+
     /*    
     many():Parser<T[]>{
         return many(this)

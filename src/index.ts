@@ -11,11 +11,11 @@ class Test{
 
 let TestParser = doParser(s=>{
 
-    let number_part = digit().fmap(parseInt).parse(s)
+    let number_part = digit().manyc1().fmap(parseInt).parse(s)
 
     let string_part = string("test").parse(s)
 
     return new Test(number_part,string_part)
 })
 
-console.log(TestParser.unParse(new State("1testilol")))
+console.log(TestParser.unParse(new State("1334testilol")))
