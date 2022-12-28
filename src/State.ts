@@ -19,4 +19,10 @@ export class State{
     length():number{
         return this.unconsumed.length
     }
+    clone():State{
+        let state =  new State(this.unconsumed)
+        state.consumed = this.consumed
+        state.position = this.position
+        return state
+    }
 }
