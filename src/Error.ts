@@ -32,9 +32,12 @@ export class ParseError{
 
         this.message = ""
         if(EOI_msg.length > 1){
-            this.message = EOI_msg[0] +( expected_msg != "" ? ", Expected: " + expected_msg : "")
-        }else{
-            this.message = "Unexpected: " + unexpected_msg + (expected_msg != "" ? ", Expected: " + expected_msg : "")
+            this.message = EOI_msg[0]
+        }else if(unexpected_msg != ""){
+            this.message = "Unexpected: " + unexpected_msg + "  "
+        }
+        if(expected_msg != ""){
+            this.message += "Expected: " + expected_msg
         }
     }
 }
