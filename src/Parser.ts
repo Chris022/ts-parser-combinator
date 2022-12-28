@@ -13,7 +13,9 @@ export function createPS<R>(state:State,val:R):Either<ParseError,[State,R]>{
 }
 
 export class Parser<T>{
-    public constructor(public runParser:(input:State)=>Either<ParseError,[State,T]>){
+    unParse: (input: State) => Either<ParseError, [State, T]>;
+    public constructor(private runParser:(input:State)=>Either<ParseError,[State,T]>){
+        this.unParse = (input:State)=> runParser(input.clone())
     }
 
     /*    
