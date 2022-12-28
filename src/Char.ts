@@ -36,7 +36,7 @@ export let letter = () => new Parser<string>(input => {
 export let digit = () => new Parser<string>(input => {
     let char = input.consume(1)
     let alpha = ["0","1","2","3","4","5","6","7","8","9"]
-    if(alpha.indexOf(char) == -1) return createPS(input,char)
+    if(alpha.indexOf(char) != -1) return createPS(input,char)
     return createPE([new Expected("a digit")])
 })
 
