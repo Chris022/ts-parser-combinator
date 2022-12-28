@@ -1,6 +1,7 @@
-import { doEither } from "./Either";
+import { doEither, Left } from "./Either";
 import { Message, ParseError } from "./Error";
 import { createPE, createPS, Parser } from "./Parser";
+import { State } from "./State";
 
 
 let choice = <T>(parsers:[Parser<T>])=> new Parser<T>(input => {
@@ -28,3 +29,20 @@ let between = <A,B,C>(open:Parser<A>,close:Parser<B>,p:Parser<C>)=> new Parser<C
         return createPS(input___,res)
     })
 })
+
+let hidden = (parsers:Parser<any>[]):Parser<string>=>{
+    return new Parser(input => {
+        let state = input
+        for(var i = 0; i < parsers.length; i++){
+            let pars_v = parsers[i].unParse(input)
+            if(pars_v.isLeft()){
+                return createPE((pars_v.value as ParseError).messages);
+            }
+            let [new_input,_] = pars_v.value as [State,any]
+            state = new_input
+        }
+        return createPS(state,"")
+    })
+}
+
+//TODO: Implement hidden (as manipulator)
