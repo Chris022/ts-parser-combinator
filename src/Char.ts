@@ -8,50 +8,50 @@ import { State } from "./State"
  * 
  */
 
-let satisfy = (func: (char:string)=>boolean) => new Parser<string>(input => {
+export let satisfy = (func: (char:string)=>boolean) => new Parser<string>(input => {
     let char = input.consume(1)
     if(func(char)) return createPS(input,char)
     return createPE([new Expected("a char that satisfies the function")])
 })
 
-let oneOf = (char_array:string) => new Parser<string>(input => {
+export let oneOf = (char_array:string) => new Parser<string>(input => {
     let char = input.consume(1)
     if(char_array.indexOf(char) != -1) return createPS(input,char)
     return createPE([...char_array].map(c=>new Expected(c)))
 })
 
-let noneOf = (char_array:string) => new Parser<string>(input => {
+export let noneOf = (char_array:string) => new Parser<string>(input => {
     let char = input.consume(1)
     if(char_array.indexOf(char) == -1) return createPS(input,char)
     return createPE([...char_array].map(c=>new Unexpected(c)))
 })
 
-let letter = () => new Parser<string>(input => {
+export let letter = () => new Parser<string>(input => {
     let char = input.consume(1)
     let alpha = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     if(alpha.indexOf(char.toLowerCase()) == -1) return createPS(input,char)
     return createPE([new Expected("a letter")])
 })
 
-let digit = () => new Parser<string>(input => {
+export let digit = () => new Parser<string>(input => {
     let char = input.consume(1)
     let alpha = ["0","1","2","3","4","5","6","7","8","9"]
     if(alpha.indexOf(char) == -1) return createPS(input,char)
     return createPE([new Expected("a digit")])
 })
 
-let char = (char:string) => new Parser<string>(input => {
+export let char = (char:string) => new Parser<string>(input => {
     let char_i = input.consume(1)
     if(char == char_i) return createPS(input,char)
     return createPE([new Expected(char)])
 })
 
-let anyChar = (char:string) => new Parser<string>(input => {
+export let anyChar = (char:string) => new Parser<string>(input => {
     return createPS(input,char)
     return createPE([new Expected("any char")])
 })
 
-let string = (text:string)  => new Parser<string>(input => {
+export let string = (text:string)  => new Parser<string>(input => {
     let txt = input.consume(text.length)
     if(txt == text) return createPS(input,text)
     return createPE([new Expected(text)])
