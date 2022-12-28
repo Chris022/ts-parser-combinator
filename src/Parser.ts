@@ -1,38 +1,18 @@
 import { doEither, Either,Left,Right } from "./Either";
+import { Message, ParseError } from "./Error";
+import { State } from "./State";
 
-class State{
-    consumed: string;
-    position: number;
-    unconsumed: string;
-    public constructor(unconsumed:string){
-        this.consumed = ""
-        this.position = 0
-        this.unconsumed = unconsumed
-    }
-    getText(length:number):string{
-        return this.unconsumed.substring(0,length)
-    }
-    consume(length:number):string{
-        let consumed_text = this.unconsumed.substring(0,length)
-        this.consumed += consumed_text
-        this.unconsumed = this.unconsumed.substring(length)
-        return consumed_text
-    }
-    length():number{
-        return this.unconsumed.length
-    }
-}
 
 //create Parse Error
-function createPE<R>(messages:Message[]):Either<ParseError,R>{
+export function createPE<R>(messages:Message[]):Either<ParseError,R>{
     return Left(new ParseError(messages))
 }
 //create Parse Succees
-function createPS<R>(state:State,val:R):Either<ParseError,[State,R]>{
+export function createPS<R>(state:State,val:R):Either<ParseError,[State,R]>{
     return Right([state,val])
 }
 
-class Parser<T>{
+export class Parser<T>{
     public constructor(public runParser:(input:State)=>Either<ParseError,[State,T]>){
     }
 

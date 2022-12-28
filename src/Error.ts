@@ -1,29 +1,29 @@
-interface Message{
+export interface Message{
     message_text:string;
 }
 
-class EndOfInputMessage implements Message{
+export class EndOfInputMessage implements Message{
     message_text: string;
     constructor(){
         this.message_text = "Unexpected end of input"
     }
 }
 
-class Expected implements Message{
+export class Expected implements Message{
     message_text: string;
     constructor(expected_value:string){
         this.message_text = expected_value
     }
 }
 
-class Unexpected implements Message{
+export class Unexpected implements Message{
     message_text: string;
     constructor(unexpected_value:string){
         this.message_text = unexpected_value
     }
 }
 
-class ParseError{
+export class ParseError{
     message: string;
     constructor(messages:Message[]){
         let expected_msg = messages.filter(message=>message instanceof Expected).map(msg=>msg.message_text).join(" or ")
