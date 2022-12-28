@@ -3,6 +3,10 @@ import { Message, ParseError } from "./Error";
 import { State } from "./State";
 
 
+class ParserValueError<L> extends Error{
+    constructor(public left: L){super("ParserValueError")}
+}
+
 //create Parse Error
 export function createPE<R>(messages:Message[]):Either<ParseError,R>{
     return Left(new ParseError(messages))
@@ -16,6 +20,19 @@ export class Parser<T>{
     unParse: (input: State) => Either<ParseError, [State, T]>;
     public constructor(private runParser:(input:State)=>Either<ParseError,[State,T]>){
         this.unParse = (input:State)=> runParser(input.clone())
+    }
+
+    //can and should only be used in do block!!
+    parse(state:State):T{
+        let res = this.unParse(state)
+        if(res.isRight()){
+            let [new_input,value] = res.value as [State,T]
+            state.consumed = new_input.consumed
+            state.unconsumed = new_input.unconsumed
+            state.position = new_input.position
+            return value
+        }
+        throw new ParserValueError(res.value as ParseError)
     }
 
     fmap<A>(func:(v:T)=>A){
@@ -32,6 +49,23 @@ export class Parser<T>{
         return many(this)
     }
     */
+}
+
+export function doParser<T>(func: (state:State)=>T):Parser<T>{
+    return new Parser(input => {
+        let state = input
+        try {
+            let res = func(state)
+            return createPS(state,res)
+        } catch (error) {
+            if(error instanceof ParserValueError){
+                return createPE((error.left as ParseError).messages)
+            }else{
+                throw error
+            }
+        }
+    })
+
 }
 
 
