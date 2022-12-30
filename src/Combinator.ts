@@ -4,7 +4,7 @@ import { createPE, createPS, Parser } from "./Parser";
 import { State } from "./State";
 
 
-export let choice = <T>(parsers:[Parser<T>])=> new Parser<T>(input => {
+export let choice = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
     let messages:Message[] = []
 
     for(var i = 0; i < parsers.length; i++){
