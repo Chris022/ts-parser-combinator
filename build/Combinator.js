@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.hidden = exports.between = exports.optional = exports.choice = void 0;
 const Either_1 = require("./Either");
 const Parser_1 = require("./Parser");
 let choice = (parsers) => new Parser_1.Parser(input => {
@@ -12,12 +13,14 @@ let choice = (parsers) => new Parser_1.Parser(input => {
     }
     return (0, Parser_1.createPE)(messages);
 });
-let option = (parser, default_v) => new Parser_1.Parser(input => {
+exports.choice = choice;
+let optional = (parser, default_v) => new Parser_1.Parser(input => {
     let res = parser.unParse(input);
     if (res.isRight())
         return res;
     return (0, Parser_1.createPS)(input, default_v);
 });
+exports.optional = optional;
 let between = (open, close, p) => new Parser_1.Parser(input => {
     return (0, Either_1.doEither)(() => {
         let [input_, _] = open.unParse(input).get();
@@ -26,6 +29,7 @@ let between = (open, close, p) => new Parser_1.Parser(input => {
         return (0, Parser_1.createPS)(input___, res);
     });
 });
+exports.between = between;
 let hidden = (parsers) => {
     return new Parser_1.Parser(input => {
         let state = input;
@@ -40,4 +44,5 @@ let hidden = (parsers) => {
         return (0, Parser_1.createPS)(state, "");
     });
 };
+exports.hidden = hidden;
 //TODO: Implement hidden (as manipulator)
