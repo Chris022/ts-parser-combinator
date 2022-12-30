@@ -46,7 +46,8 @@ export let char = (char:string) => new Parser<string>(input => {
     return createPE([new Expected(char)])
 })
 
-export let anyChar = (char:string) => new Parser<string>(input => {
+export let anyChar = () => new Parser<string>(input => {
+    let char = input.consume(1)
     return createPS(input,char)
     return createPE([new Expected("any char")])
 })
