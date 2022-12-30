@@ -52,7 +52,8 @@ let char = (char) => new Parser_1.Parser(input => {
     return (0, Parser_1.createPE)([new Error_1.Expected(char)]);
 });
 exports.char = char;
-let anyChar = (char) => new Parser_1.Parser(input => {
+let anyChar = () => new Parser_1.Parser(input => {
+    let char = input.consume(1);
     return (0, Parser_1.createPS)(input, char);
     return (0, Parser_1.createPE)([new Error_1.Expected("any char")]);
 });
