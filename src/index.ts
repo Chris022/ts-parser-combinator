@@ -1,26 +1,6 @@
-
-//Test multi data type parsers
-
-import { digit, string } from "./Char";
-import { createPS, doParser, Parser } from "./Parser";
-import { State } from "./State";
-
-class Test{
-    constructor(public a:number,public b:string){}
-}
-
-function TestParser(){
-    return doParser(s=>{
-
-        let number_part = digit().manyc1().fmap(parseInt).parse(s)
-    
-        let string_part = string("test").parse(s)
-    
-        let me = TestParser().try(new Test(0,"test")).parse(s)
-        console.log(me)
-    
-        return new Test(number_part,string_part)
-    })
-}
-
-console.log(TestParser().unParse(new State("1334test123test")))
+export * from "./Error"
+export * from "./Either"
+export * from "./Combinator"
+export * from "./Char"
+export * from "./Parser"
+export * from "./State"
