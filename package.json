@@ -2,9 +2,9 @@
   "name": "ts-parser-combinator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Chris022/ts-parser-combinator/issues"
   },
-  "homepage": "https://github.com/Chris022/ts-parser-combinator#readme"
+  "homepage": "https://github.com/Chris022/ts-parser-combinator#readme",
+  "dependencies": {
+    "typescript": "^4.9.4"
+  }
 }
