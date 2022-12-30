@@ -4,7 +4,7 @@ import { createPE, createPS, Parser } from "./Parser";
 import { State } from "./State";
 
 
-let choice = <T>(parsers:[Parser<T>])=> new Parser<T>(input => {
+export let choice = <T>(parsers:[Parser<T>])=> new Parser<T>(input => {
     let messages:Message[] = []
 
     for(var i = 0; i < parsers.length; i++){
@@ -15,13 +15,13 @@ let choice = <T>(parsers:[Parser<T>])=> new Parser<T>(input => {
     return createPE(messages)
 })
 
-let option = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input => {
+export let optional = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input => {
     let res = parser.unParse(input)
     if(res.isRight()) return res 
     return createPS(input,default_v)
 })
 
-let between = <A,B,C>(open:Parser<A>,close:Parser<B>,p:Parser<C>)=> new Parser<C>(input => {
+export let between = <A,B,C>(open:Parser<A>,close:Parser<B>,p:Parser<C>)=> new Parser<C>(input => {
     return doEither(()=>{
         let [input_,_] = open.unParse(input).get()
         let [input__,res] = p.unParse(input_).get()
@@ -30,7 +30,7 @@ let between = <A,B,C>(open:Parser<A>,close:Parser<B>,p:Parser<C>)=> new Parser<C
     })
 })
 
-let hidden = (parsers:Parser<any>[]):Parser<string>=>{
+export let hidden = (parsers:Parser<any>[]):Parser<string>=>{
     return new Parser(input => {
         let state = input
         for(var i = 0; i < parsers.length; i++){
