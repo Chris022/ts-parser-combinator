@@ -90,11 +90,14 @@ export class Parser<T>{
         })
     }
 
-    /*    
-    many():Parser<T[]>{
-        return many(this)
+    try(default_v:T){
+        return new Parser<T>(input => {
+            let res = this.unParse(input)
+            if(res.isRight()) return res 
+            return createPS(input,default_v)
+        })
     }
-    */
+
 }
 
 export function doParser<T>(func: (state:State)=>T):Parser<T>{
