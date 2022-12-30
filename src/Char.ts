@@ -58,3 +58,8 @@ export let string = (text:string)  => new Parser<string>(input => {
     return createPE([new Expected(text)])
 })
 
+ //returns the next n unconsumed characters without consuming them
+export let lookAhead = (lenght:number) => new Parser<string>(input => {
+    let txt = input.getText(length)
+    return createPS(input,txt)
+})

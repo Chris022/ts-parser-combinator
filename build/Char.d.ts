@@ -12,3 +12,4 @@ export declare let digit: () => Parser<string>;
 export declare let char: (char: string) => Parser<string>;
 export declare let anyChar: () => Parser<string>;
 export declare let string: (text: string) => Parser<string>;
+export declare let lookAhead: (lenght: number) => Parser<string>;

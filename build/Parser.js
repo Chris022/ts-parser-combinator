@@ -88,12 +88,20 @@ class Parser {
             return res1 + res2;
         });
     }
-    try(default_v) {
+    default(default_v) {
         return new Parser(input => {
             let res = this.unParse(input);
             if (res.isRight())
                 return res;
             return createPS(input, default_v);
+        });
+    }
+    try() {
+        return new Parser(input => {
+            let res = this.unParse(input.clone());
+            if (res.isRight())
+                return res;
+            return createPE(res.value.messages);
         });
     }
 }

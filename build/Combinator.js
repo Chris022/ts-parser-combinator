@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.hidden = exports.between = exports.optional = exports.choice = void 0;
+exports.manyTill = exports.hidden = exports.between = exports.or = exports.optional = exports.choice = void 0;
 const Either_1 = require("./Either");
+const Error_1 = require("./Error");
 const Parser_1 = require("./Parser");
 let choice = (parsers) => new Parser_1.Parser(input => {
     let messages = [];
@@ -21,6 +22,16 @@ let optional = (parser, default_v) => new Parser_1.Parser(input => {
     return (0, Parser_1.createPS)(input, default_v);
 });
 exports.optional = optional;
+let or = (pa, pb) => new Parser_1.Parser(input => {
+    let res1 = pa.unParse(input);
+    if (res1.isRight())
+        return res1;
+    let res2 = pb.unParse(input);
+    if (res2.isRight())
+        return res2;
+    return (0, Parser_1.createPE)([...res1.value.messages, ...res2.value.messages]);
+});
+exports.or = or;
 let between = (open, close, p) => new Parser_1.Parser(input => {
     return (0, Either_1.doEither)(() => {
         let [input_, _] = open.unParse(input).get();
@@ -45,4 +56,23 @@ let hidden = (parsers) => {
     });
 };
 exports.hidden = hidden;
+let manyTill = (p, end) => {
+    return new Parser_1.Parser(input => {
+        let matches = [];
+        let current_state = input;
+        while (current_state.unconsumed.length != 0) {
+            let end_res = end.try().unParse(current_state);
+            if (end_res.isRight())
+                return (0, Parser_1.createPS)(current_state, matches);
+            let p_res = p.unParse(current_state);
+            if (p_res.isLeft())
+                return (0, Parser_1.createPE)(p_res.value.messages);
+            let [new_input, value] = p_res.value;
+            current_state = new_input;
+            matches.push(value);
+        }
+        return (0, Parser_1.createPE)([new Error_1.EndOfInputMessage()]);
+    });
+};
+exports.manyTill = manyTill;
 //TODO: Implement hidden (as manipulator)

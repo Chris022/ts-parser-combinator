@@ -13,6 +13,7 @@ export declare class Parser<T> {
     manyc(): Parser<string>;
     many1(): Parser<T[]>;
     manyc1(): Parser<string>;
-    try(default_v: T): Parser<T>;
+    default(default_v: T): Parser<T>;
+    try(): Parser<T>;
 }
 export declare function doParser<T>(func: (state: State) => T): Parser<T>;

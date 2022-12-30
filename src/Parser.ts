@@ -90,11 +90,19 @@ export class Parser<T>{
         })
     }
 
-    try(default_v:T){
+    default(default_v:T){
         return new Parser<T>(input => {
             let res = this.unParse(input)
             if(res.isRight()) return res 
             return createPS(input,default_v)
+        })
+    }
+
+    try(){
+        return new Parser<T>(input => {
+            let res = this.unParse(input.clone())
+            if(res.isRight()) return res 
+            return createPE((res.value as ParseError).messages)
         })
     }
 

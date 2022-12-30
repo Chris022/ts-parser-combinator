@@ -1,6 +1,6 @@
 import { doEither, Left } from "./Either";
-import { Message, ParseError } from "./Error";
-import { createPE, createPS, Parser } from "./Parser";
+import { EndOfInputMessage, Message, ParseError } from "./Error";
+import { createPE, createPS, doParser, Parser } from "./Parser";
 import { State } from "./State";
 
 
@@ -19,6 +19,14 @@ export let optional = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input =>
     let res = parser.unParse(input)
     if(res.isRight()) return res 
     return createPS(input,default_v)
+})
+
+export let or = <A,B>(pa:Parser<A>,pb:Parser<B>)=> new Parser<A|B>(input => {
+    let res1 = pa.unParse(input)
+    if(res1.isRight()) return res1
+    let res2 = pb.unParse(input)
+    if(res2.isRight()) return res2
+    return createPE([...(res1.value as ParseError).messages,...(res2.value as ParseError).messages])
 })
 
 export let between = <A,B,C>(open:Parser<A>,close:Parser<B>,p:Parser<C>)=> new Parser<C>(input => {
@@ -42,6 +50,23 @@ export let hidden = (parsers:Parser<any>[]):Parser<string>=>{
             state = new_input
         }
         return createPS(state,"")
+    })
+}
+
+export let manyTill = <T,E>(p:Parser<T>,end:Parser<E>):Parser<T[]> => {
+    return new Parser<T[]>(input=>{
+        let matches:T[] = []
+        let current_state = input
+        while(current_state.unconsumed.length != 0){
+            let end_res = end.try().unParse(current_state)
+            if(end_res.isRight()) return createPS(current_state,matches)
+            let p_res = p.unParse(current_state)
+            if(p_res.isLeft()) return createPE((p_res.value as ParseError).messages)
+            let [new_input,value] = p_res.value as [State,T]
+            current_state = new_input
+            matches.push(value)
+        }
+        return createPE([new EndOfInputMessage()])
     })
 }
 

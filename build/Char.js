@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.string = exports.anyChar = exports.char = exports.digit = exports.letter = exports.noneOf = exports.oneOf = exports.satisfy = void 0;
+exports.lookAhead = exports.string = exports.anyChar = exports.char = exports.digit = exports.letter = exports.noneOf = exports.oneOf = exports.satisfy = void 0;
 const Error_1 = require("./Error");
 const Parser_1 = require("./Parser");
 /**
@@ -65,3 +65,9 @@ let string = (text) => new Parser_1.Parser(input => {
     return (0, Parser_1.createPE)([new Error_1.Expected(text)]);
 });
 exports.string = string;
+//returns the next n unconsumed characters without consuming them
+let lookAhead = (lenght) => new Parser_1.Parser(input => {
+    let txt = input.getText(length);
+    return (0, Parser_1.createPS)(input, txt);
+});
+exports.lookAhead = lookAhead;
