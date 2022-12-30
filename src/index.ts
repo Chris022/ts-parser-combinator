@@ -9,13 +9,18 @@ class Test{
     constructor(public a:number,public b:string){}
 }
 
-let TestParser = doParser(s=>{
+function TestParser(){
+    return doParser(s=>{
 
-    let number_part = digit().manyc1().fmap(parseInt).parse(s)
+        let number_part = digit().manyc1().fmap(parseInt).parse(s)
+    
+        let string_part = string("test").parse(s)
+    
+        let me = TestParser().try(new Test(0,"test")).parse(s)
+        console.log(me)
+    
+        return new Test(number_part,string_part)
+    })
+}
 
-    let string_part = string("test").parse(s)
-
-    return new Test(number_part,string_part)
-})
-
-console.log(TestParser.unParse(new State("1334testilol")))
+console.log(TestParser().unParse(new State("1334test123test")))
