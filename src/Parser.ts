@@ -106,6 +106,16 @@ export class Parser<T>{
         })
     }
 
+    or<A>(p:Parser<A>){
+        return new Parser<T|A>(input => {
+            let res1 = this.unParse(input)
+            if(res1.isRight()) return res1
+            let res2 = p.unParse(input)
+            if(res2.isRight()) return res2
+            return createPE([...(res1.value as ParseError).messages,...(res2.value as ParseError).messages])
+        })
+
+    }
 }
 
 export function doParser<T>(func: (state:State)=>T):Parser<T>{

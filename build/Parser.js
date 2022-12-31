@@ -104,6 +104,17 @@ class Parser {
             return createPE(res.value.messages);
         });
     }
+    or(p) {
+        return new Parser(input => {
+            let res1 = this.unParse(input);
+            if (res1.isRight())
+                return res1;
+            let res2 = p.unParse(input);
+            if (res2.isRight())
+                return res2;
+            return createPE([...res1.value.messages, ...res2.value.messages]);
+        });
+    }
 }
 exports.Parser = Parser;
 function doParser(func) {
