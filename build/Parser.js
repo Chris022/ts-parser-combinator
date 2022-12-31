@@ -119,9 +119,10 @@ class Parser {
 exports.Parser = Parser;
 function doParser(func) {
     return new Parser(input => {
+        let input_start = input.position;
         let state = input;
         try {
-            let res = func(state, () => input.clone().position, () => state.position);
+            let res = func(state, () => input_start, () => state.position);
             return createPS(state, res);
         }
         catch (error) {
