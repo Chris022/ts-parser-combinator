@@ -35,6 +35,15 @@ export let chooseBest = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
     return parsers[best[1]].unParse(input)
 })
 
+export let sepBy = <A,B>(p:Parser<A>,seperator:Parser<B>) => doParser((s)=>{
+    let value = doParser((s2)=>{
+        let head = p.parse(s2)
+        let tail = seperator.right(p).many().parse(s2)
+        return [head,...tail]
+    }).default([]).parse(s)
+    return value
+})
+
 export let optional = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input => {
     let res = parser.unParse(input)
     if(res.isRight()) return res 
