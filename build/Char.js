@@ -32,7 +32,7 @@ exports.noneOf = noneOf;
 let letter = () => new Parser_1.Parser(input => {
     let char = input.consume(1);
     let alpha = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-    if (alpha.indexOf(char.toLowerCase()) == -1)
+    if (alpha.indexOf(char.toLowerCase()) != -1)
         return (0, Parser_1.createPS)(input, char);
     return (0, Parser_1.createPE)([new Error_1.Expected("a letter")]);
 });

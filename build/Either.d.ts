@@ -1,4 +1,4 @@
-export type Either<L, R> = EitherClass<L, R>;
+export declare type Either<L, R> = EitherClass<L, R>;
 declare class EitherClass<L, R> {
     error: boolean;
     value: L | R;
