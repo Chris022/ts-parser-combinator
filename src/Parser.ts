@@ -114,7 +114,22 @@ export class Parser<T>{
             if(res2.isRight()) return res2
             return createPE([...(res1.value as ParseError).messages,...(res2.value as ParseError).messages])
         })
+    }
 
+    left<A>(p:Parser<A>):Parser<T>{
+        return doParser((s)=>{
+            let res = this.parse(s)
+            p.parse(s)
+            return res
+        })
+    }
+    
+    right<A>(p:Parser<A>):Parser<A>{
+        return doParser((s)=>{
+            this.parse(s)
+            let res = p.parse(s)
+            return res
+        })
     }
 }
 

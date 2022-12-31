@@ -115,6 +115,20 @@ class Parser {
             return createPE([...res1.value.messages, ...res2.value.messages]);
         });
     }
+    left(p) {
+        return doParser((s) => {
+            let res = this.parse(s);
+            p.parse(s);
+            return res;
+        });
+    }
+    right(p) {
+        return doParser((s) => {
+            this.parse(s);
+            let res = p.parse(s);
+            return res;
+        });
+    }
 }
 exports.Parser = Parser;
 function doParser(func) {

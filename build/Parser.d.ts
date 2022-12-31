@@ -16,5 +16,7 @@ export declare class Parser<T> {
     default(default_v: T): Parser<T>;
     try(): Parser<T>;
     or<A>(p: Parser<A>): Parser<T | A>;
+    left<A>(p: Parser<A>): Parser<T>;
+    right<A>(p: Parser<A>): Parser<A>;
 }
 export declare function doParser<T>(func: (state: State, start: () => number, end: () => number) => T): Parser<T>;
