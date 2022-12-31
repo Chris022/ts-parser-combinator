@@ -36,7 +36,7 @@ let between = (open, close, p) => new Parser_1.Parser(input => {
     return (0, Either_1.doEither)(() => {
         let [input_, _] = open.unParse(input).get();
         let [input__, res] = p.unParse(input_).get();
-        let [input___, __] = close.unParse(input).get();
+        let [input___, __] = close.unParse(input__).get();
         return (0, Parser_1.createPS)(input___, res);
     });
 });
