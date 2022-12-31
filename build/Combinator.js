@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.manyTill = exports.hidden = exports.between = exports.or = exports.optional = exports.choice = void 0;
+exports.manyTill = exports.hidden = exports.between = exports.or = exports.optional = exports.chooseBest = exports.choice = void 0;
 const Either_1 = require("./Either");
 const Error_1 = require("./Error");
 const Parser_1 = require("./Parser");
@@ -35,6 +35,7 @@ let chooseBest = (parsers) => new Parser_1.Parser(input => {
     }
     return parsers[best[1]].unParse(input);
 });
+exports.chooseBest = chooseBest;
 let optional = (parser, default_v) => new Parser_1.Parser(input => {
     let res = parser.unParse(input);
     if (res.isRight())

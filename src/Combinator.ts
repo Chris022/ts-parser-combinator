@@ -16,7 +16,7 @@ export let choice = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
     return createPE(messages)
 })
 
-let chooseBest = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
+export let chooseBest = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
     let messages:Message[] = []
     let best:null|[number,number] = null
     for(var i = 0; i < parsers.length; i++){
