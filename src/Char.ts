@@ -29,7 +29,7 @@ export let noneOf = (char_array:string) => new Parser<string>(input => {
 export let letter = () => new Parser<string>(input => {
     let char = input.consume(1)
     let alpha = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-    if(alpha.indexOf(char.toLowerCase()) == -1) return createPS(input,char)
+    if(alpha.indexOf(char.toLowerCase()) != -1) return createPS(input,char)
     return createPE([new Expected("a letter")])
 })
 
