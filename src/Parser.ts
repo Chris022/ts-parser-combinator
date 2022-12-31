@@ -123,7 +123,7 @@ export function doParser<T>(func: (state:State,start:()=>number,end:()=>number)=
         let input_start = input.position
         let state = input
         try {
-            let res = func(state,()=>input_start,()=>state.position)
+            let res = func(state,()=>input_start,()=>state.position-1)
             return createPS(state,res)
         } catch (error) {
             if(error instanceof ParserValueError){
