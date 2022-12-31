@@ -118,7 +118,7 @@ export class Parser<T>{
     }
 }
 
-export function doParser<T>(func: (state:State,start?:()=>number,end?:()=>number)=>T):Parser<T>{
+export function doParser<T>(func: (state:State,start:()=>number,end:()=>number)=>T):Parser<T>{
     return new Parser(input => {
         let state = input
         try {
@@ -132,10 +132,7 @@ export function doParser<T>(func: (state:State,start?:()=>number,end?:()=>number
             }
         }
     })
-
 }
-
-
 
 /*
 let many = <T>(p:Parser<T>):Parser<T[]> => {

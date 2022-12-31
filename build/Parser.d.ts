@@ -17,4 +17,4 @@ export declare class Parser<T> {
     try(): Parser<T>;
     or<A>(p: Parser<A>): Parser<T | A>;
 }
-export declare function doParser<T>(func: (state: State, start?: () => number, end?: () => number) => T): Parser<T>;
+export declare function doParser<T>(func: (state: State, start: () => number, end: () => number) => T): Parser<T>;
