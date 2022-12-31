@@ -15,6 +15,26 @@ let choice = (parsers) => new Parser_1.Parser(input => {
     return (0, Parser_1.createPE)(messages);
 });
 exports.choice = choice;
+let chooseBest = (parsers) => new Parser_1.Parser(input => {
+    let messages = [];
+    let best = null;
+    for (var i = 0; i < parsers.length; i++) {
+        let pars_v = parsers[i].unParse(input.clone());
+        if (pars_v.isRight()) {
+            let lenght = pars_v.value[0].position;
+            if (best == null)
+                best = [lenght, i];
+            else if (lenght > best[0])
+                best = [lenght, i];
+            continue;
+        }
+        messages = [...messages, ...pars_v.value.messages];
+    }
+    if (best == null) {
+        return (0, Parser_1.createPE)(messages);
+    }
+    return parsers[best[1]].unParse(input);
+});
 let optional = (parser, default_v) => new Parser_1.Parser(input => {
     let res = parser.unParse(input);
     if (res.isRight())

@@ -1,3 +1,4 @@
+import { string } from "./Char";
 import { doEither, Left } from "./Either";
 import { EndOfInputMessage, Message, ParseError } from "./Error";
 import { createPE, createPS, doParser, Parser } from "./Parser";
@@ -13,6 +14,25 @@ export let choice = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
         messages = [...messages,...(pars_v.value as ParseError).messages]
     }
     return createPE(messages)
+})
+
+let chooseBest = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
+    let messages:Message[] = []
+    let best:null|[number,number] = null
+    for(var i = 0; i < parsers.length; i++){
+        let pars_v = parsers[i].unParse(input.clone())
+        if(pars_v.isRight()){
+            let lenght = (pars_v.value as [State,T])[0].position
+            if(best == null) best = [lenght,i]
+            else if(lenght > best[0]) best = [lenght,i]
+            continue
+        }
+        messages = [...messages,...(pars_v.value as ParseError).messages]
+    }
+    if(best == null){
+        return createPE(messages)
+    }
+    return parsers[best[1]].unParse(input)
 })
 
 export let optional = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input => {
