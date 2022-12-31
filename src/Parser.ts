@@ -118,11 +118,11 @@ export class Parser<T>{
     }
 }
 
-export function doParser<T>(func: (state:State)=>T):Parser<T>{
+export function doParser<T>(func: (state:State,start?:()=>number,end?:()=>number)=>T):Parser<T>{
     return new Parser(input => {
         let state = input
         try {
-            let res = func(state)
+            let res = func(state,()=>input.clone().position,()=>state.position)
             return createPS(state,res)
         } catch (error) {
             if(error instanceof ParserValueError){

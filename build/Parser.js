@@ -121,7 +121,7 @@ function doParser(func) {
     return new Parser(input => {
         let state = input;
         try {
-            let res = func(state);
+            let res = func(state, () => input.clone().position, () => state.position);
             return createPS(state, res);
         }
         catch (error) {
