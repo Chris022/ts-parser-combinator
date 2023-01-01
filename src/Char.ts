@@ -14,6 +14,10 @@ export let satisfy = (func: (char:string)=>boolean) => new Parser<string>(input 
     return createPE([new Expected("a char that satisfies the function")])
 })
 
+export let fail = <T>() => new Parser<T>(input => {
+    return createPE([])
+})
+
 export let oneOf = (char_array:string) => new Parser<string>(input => {
     let char = input.consume(1)
     if(char_array.indexOf(char) != -1) return createPS(input,char)

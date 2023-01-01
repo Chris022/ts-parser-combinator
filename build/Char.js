@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lookAhead = exports.string = exports.anyChar = exports.char = exports.digit = exports.letter = exports.noneOf = exports.oneOf = exports.satisfy = void 0;
+exports.lookAhead = exports.string = exports.anyChar = exports.char = exports.digit = exports.letter = exports.noneOf = exports.oneOf = exports.fail = exports.satisfy = void 0;
 const Error_1 = require("./Error");
 const Parser_1 = require("./Parser");
 /**
@@ -15,6 +15,10 @@ let satisfy = (func) => new Parser_1.Parser(input => {
     return (0, Parser_1.createPE)([new Error_1.Expected("a char that satisfies the function")]);
 });
 exports.satisfy = satisfy;
+let fail = () => new Parser_1.Parser(input => {
+    return (0, Parser_1.createPE)([]);
+});
+exports.fail = fail;
 let oneOf = (char_array) => new Parser_1.Parser(input => {
     let char = input.consume(1);
     if (char_array.indexOf(char) != -1)

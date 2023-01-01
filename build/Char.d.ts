@@ -5,6 +5,7 @@ import { Parser } from "./Parser";
  *
  */
 export declare let satisfy: (func: (char: string) => boolean) => Parser<string>;
+export declare let fail: <T>() => Parser<T>;
 export declare let oneOf: (char_array: string) => Parser<string>;
 export declare let noneOf: (char_array: string) => Parser<string>;
 export declare let letter: () => Parser<string>;
