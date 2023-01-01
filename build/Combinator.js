@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.manyTill = exports.hidden = exports.between = exports.or = exports.optional = exports.sepBy = exports.chooseBest = exports.choice = void 0;
+exports.manyTill = exports.hidden = exports.between = exports.or = exports.defaultValue = exports.sepBy = exports.chooseBest = exports.choice = void 0;
 const Either_1 = require("./Either");
 const Error_1 = require("./Error");
 const Parser_1 = require("./Parser");
@@ -41,17 +41,17 @@ let sepBy = (p, seperator) => (0, Parser_1.doParser)((s) => {
         let head = p.parse(s2);
         let tail = seperator.right(p).many().parse(s2);
         return [head, ...tail];
-    }).default([]).parse(s);
+    }).defaultValue([]).parse(s);
     return value;
 });
 exports.sepBy = sepBy;
-let optional = (parser, default_v) => new Parser_1.Parser(input => {
+let defaultValue = (parser, default_v) => new Parser_1.Parser(input => {
     let res = parser.unParse(input);
     if (res.isRight())
         return res;
     return (0, Parser_1.createPS)(input, default_v);
 });
-exports.optional = optional;
+exports.defaultValue = defaultValue;
 let or = (pa, pb) => new Parser_1.Parser(input => {
     let res1 = pa.unParse(input);
     if (res1.isRight())

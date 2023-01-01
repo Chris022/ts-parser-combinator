@@ -90,13 +90,22 @@ export class Parser<T>{
         })
     }
 
-    default(default_v:T){
+    defaultValue(default_v:T){
         return new Parser<T>(input => {
             let res = this.unParse(input)
             if(res.isRight()) return res 
             return createPS(input,default_v)
         })
     }
+
+    optional(){
+        return new Parser<T | void>(input => {
+            let res = this.unParse(input)
+            if(res.isRight()) return res 
+            return createPS(input,undefined)
+        })
+    }
+
 
     try(){
         return new Parser<T>(input => {

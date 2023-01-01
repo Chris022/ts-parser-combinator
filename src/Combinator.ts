@@ -40,11 +40,11 @@ export let sepBy = <A,B>(p:Parser<A>,seperator:Parser<B>) => doParser((s)=>{
         let head = p.parse(s2)
         let tail = seperator.right(p).many().parse(s2)
         return [head,...tail]
-    }).default([]).parse(s)
+    }).defaultValue([]).parse(s)
     return value
 })
 
-export let optional = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input => {
+export let defaultValue = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(input => {
     let res = parser.unParse(input)
     if(res.isRight()) return res 
     return createPS(input,default_v)

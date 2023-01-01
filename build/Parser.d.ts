@@ -13,7 +13,8 @@ export declare class Parser<T> {
     manyc(): Parser<string>;
     many1(): Parser<T[]>;
     manyc1(): Parser<string>;
-    default(default_v: T): Parser<T>;
+    defaultValue(default_v: T): Parser<T>;
+    optional(): Parser<void | T>;
     try(): Parser<T>;
     or<A>(p: Parser<A>): Parser<T | A>;
     left<A>(p: Parser<A>): Parser<T>;
