@@ -100,9 +100,10 @@ export class Parser<T>{
 
     optional(){
         return new Parser<T | void>(input => {
+            let base_input = input.clone()
             let res = this.unParse(input)
             if(res.isRight()) return res 
-            return createPS(input,undefined)
+            return createPS(base_input,undefined)
         })
     }
 

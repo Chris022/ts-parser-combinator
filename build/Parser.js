@@ -98,10 +98,11 @@ class Parser {
     }
     optional() {
         return new Parser(input => {
+            let base_input = input.clone();
             let res = this.unParse(input);
             if (res.isRight())
                 return res;
-            return createPS(input, undefined);
+            return createPS(base_input, undefined);
         });
     }
     try() {
