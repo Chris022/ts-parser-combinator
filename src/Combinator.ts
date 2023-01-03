@@ -95,7 +95,7 @@ export let manyTill = <T,E>(p:Parser<T>,end:Parser<E>):Parser<T[]> => {
             current_state = new_input
             matches.push(value)
         }
-        return createPE([new EndOfInputMessage()])
+        return createPS(current_state,matches)
     })
 }
 

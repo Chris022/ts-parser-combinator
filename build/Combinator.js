@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.manyTill = exports.hidden = exports.between = exports.or = exports.defaultValue = exports.sepBy = exports.chooseBest = exports.choice = void 0;
 const Either_1 = require("./Either");
-const Error_1 = require("./Error");
 const Parser_1 = require("./Parser");
 let choice = (parsers) => new Parser_1.Parser(input => {
     let messages = [];
@@ -101,7 +100,7 @@ let manyTill = (p, end) => {
             current_state = new_input;
             matches.push(value);
         }
-        return (0, Parser_1.createPE)([new Error_1.EndOfInputMessage()]);
+        return (0, Parser_1.createPS)(current_state, matches);
     });
 };
 exports.manyTill = manyTill;
