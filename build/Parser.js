@@ -116,6 +116,12 @@ class Parser {
             let res = this.unParse(input);
             if (res.isRight())
                 return res;
+            //check if any input was consumed
+            let error_state = res.value.state;
+            //if something was consumed, the error
+            if (error_state.length() < input.length())
+                return (0, Either_1.Left)(res.value);
+            //if nothing was consumed, return success
             return createPS(base_input, undefined);
         });
     }

@@ -121,6 +121,11 @@ export class Parser<T>{
             let base_input = input.clone()
             let res = this.unParse(input)
             if(res.isRight()) return res 
+            //check if any input was consumed
+            let error_state = (res.value as ParseError).state
+            //if something was consumed, the error
+            if(error_state.length() < input.length()) return Left(res.value as ParseError)
+            //if nothing was consumed, return success
             return createPS(base_input,undefined)
         })
     }
