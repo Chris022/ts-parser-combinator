@@ -120,6 +120,10 @@ class Parser {
             let res1 = this.unParse(input);
             if (res1.isRight())
                 return res1;
+            //check if this consumed input
+            let error_state = res1.value.state;
+            if (error_state.length() < input.length())
+                return (0, Either_1.Left)(res1.value);
             let res2 = p.unParse(input);
             if (res2.isRight())
                 return res2;

@@ -11,6 +11,11 @@ export let choice = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
     for(var i = 0; i < parsers.length; i++){
         let pars_v = parsers[i].unParse(input)
         if(pars_v.isRight()) return pars_v
+
+        //check if any input was consume
+        let error_state = (pars_v.value as ParseError).state
+        if(error_state.length() < input.length()) return Left((pars_v.value as ParseError))
+
         errors.push(pars_v.value as ParseError)
     }
     return Left(
@@ -54,9 +59,16 @@ export let defaultValue = <T>(parser:Parser<T>,default_v:T)=> new Parser<T>(inpu
     return createPS(input,default_v)
 })
 
+
+//INFO! the second one is only tried if the first one didn't consume any input!
 export let or = <A,B>(pa:Parser<A>,pb:Parser<B>)=> new Parser<A|B>(input => {
     let res1 = pa.unParse(input)
     if(res1.isRight()) return res1
+
+    //check if pa consumed input
+    let error_state = (res1.value as ParseError).state
+    if(error_state.length() < input.length()) return Left((res1.value as ParseError))
+
     let res2 = pb.unParse(input)
     if(res2.isRight()) return res2
     return Left((res1.value as ParseError).merge((res2.value as ParseError)))

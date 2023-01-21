@@ -9,6 +9,10 @@ let choice = (parsers) => new Parser_1.Parser(input => {
         let pars_v = parsers[i].unParse(input);
         if (pars_v.isRight())
             return pars_v;
+        //check if any input was consume
+        let error_state = pars_v.value.state;
+        if (error_state.length() < input.length())
+            return (0, Either_1.Left)(pars_v.value);
         errors.push(pars_v.value);
     }
     return (0, Either_1.Left)(errors.reduce((x, xs) => x.merge(xs)));
@@ -51,10 +55,15 @@ let defaultValue = (parser, default_v) => new Parser_1.Parser(input => {
     return (0, Parser_1.createPS)(input, default_v);
 });
 exports.defaultValue = defaultValue;
+//INFO! the second one is only tried if the first one didn't consume any input!
 let or = (pa, pb) => new Parser_1.Parser(input => {
     let res1 = pa.unParse(input);
     if (res1.isRight())
         return res1;
+    //check if pa consumed input
+    let error_state = res1.value.state;
+    if (error_state.length() < input.length())
+        return (0, Either_1.Left)(res1.value);
     let res2 = pb.unParse(input);
     if (res2.isRight())
         return res2;

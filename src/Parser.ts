@@ -122,6 +122,11 @@ export class Parser<T>{
         return new Parser<T|A>(input => {
             let res1 = this.unParse(input)
             if(res1.isRight()) return res1
+
+            //check if this consumed input
+            let error_state = (res1.value as ParseError).state
+            if(error_state.length() < input.length()) return Left((res1.value as ParseError))
+
             let res2 = p.unParse(input)
             if(res2.isRight()) return res2
             return Left((res1.value as ParseError).merge((res2.value as ParseError)))
