@@ -130,7 +130,10 @@ export class Parser<T>{
         return new Parser<T>(input => {
             let res = this.unParse(input.clone())
             if(res.isRight()) return res 
-            return Left(res.value as ParseError)
+            let error = (res.value as ParseError)
+            return Left(
+                new ParseError(error.unexpected,error.expected,input)
+            )
         })
     }
 

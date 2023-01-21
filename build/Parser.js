@@ -124,7 +124,8 @@ class Parser {
             let res = this.unParse(input.clone());
             if (res.isRight())
                 return res;
-            return (0, Either_1.Left)(res.value);
+            let error = res.value;
+            return (0, Either_1.Left)(new Error_1.ParseError(error.unexpected, error.expected, input));
         });
     }
     or(p) {
