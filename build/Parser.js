@@ -10,8 +10,10 @@ class ParserValueError extends Error {
     }
 }
 //create Parse Error
-function createPE(messages) {
-    return (0, Either_1.Left)(new Error_1.ParseError(messages));
+function createPE(state, unexpected, expected) {
+    if (Array.isArray(expected))
+        return (0, Either_1.Left)(new Error_1.ParseError(unexpected, expected, state));
+    return (0, Either_1.Left)(new Error_1.ParseError(unexpected, [expected], state));
 }
 exports.createPE = createPE;
 //create Parse Succees
@@ -110,7 +112,7 @@ class Parser {
             let res = this.unParse(input.clone());
             if (res.isRight())
                 return res;
-            return createPE(res.value.messages);
+            return (0, Either_1.Left)(res.value);
         });
     }
     or(p) {
@@ -121,7 +123,7 @@ class Parser {
             let res2 = p.unParse(input);
             if (res2.isRight())
                 return res2;
-            return createPE([...res1.value.messages, ...res2.value.messages]);
+            return (0, Either_1.Left)(res1.value.merge(res2.value));
         });
     }
     left(p) {
@@ -150,7 +152,7 @@ function doParser(func) {
         }
         catch (error) {
             if (error instanceof ParserValueError) {
-                return createPE(error.left.messages);
+                return (0, Either_1.Left)(error.left);
             }
             else {
                 throw error;
@@ -159,29 +161,3 @@ function doParser(func) {
     });
 }
 exports.doParser = doParser;
-/*
-let many = <T>(p:Parser<T>):Parser<T[]> => {
-    return new Parser<T[]>(input => {
-        let current_state = input
-        let matches:T[] = []
-        let res = p.runParser(input)
-        if(res.isLeft()) return Left(res.value as ParseError)
-
-        while(1){
-            let res = p.runParser(input)
-            if(res.isLeft()) break
-            current_state = res.get()[0]
-            matches.push(res.get()[1])
-        }
-
-        return Right([current_state,matches])
-    })
-}
-
-let stringParser = (text:string) => new Parser<string>(input => {
-    if(input.length() < text.length) return createPE([new EndOfInputMessage(),new Expected(text)])
-    let input_text = input.consume(text.length)
-    if(input_text != text) return createPE([new Unexpected(input_text),new Expected(text)])
-    return createPS(input,text)
-})
-*/ 

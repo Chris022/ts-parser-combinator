@@ -1,11 +1,12 @@
 import { Parser } from "./Parser";
+import { State } from "./State";
 /**
  *
  * Commonly used Char/String Parsers
  *
  */
 export declare let satisfy: (func: (char: string) => boolean) => Parser<string>;
-export declare let fail: <T>() => Parser<T>;
+export declare let fail: <T>(state: State, unexpected: string, expected: string[] | string) => Parser<T>;
 export declare let oneOf: (char_array: string) => Parser<string>;
 export declare let noneOf: (char_array: string) => Parser<string>;
 export declare let letter: () => Parser<string>;

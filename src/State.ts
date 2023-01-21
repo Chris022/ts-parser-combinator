@@ -2,7 +2,9 @@ export class State{
     consumed: string;
     position: number;
     unconsumed: string;
+    input: string;
     public constructor(unconsumed:string){
+        this.input = unconsumed
         this.consumed = ""
         this.position = 0
         this.unconsumed = unconsumed

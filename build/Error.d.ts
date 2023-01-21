@@ -1,3 +1,4 @@
+import { State } from "./State";
 export interface Message {
     message_text: string;
 }
@@ -14,7 +15,10 @@ export declare class Unexpected implements Message {
     constructor(unexpected_value: string);
 }
 export declare class ParseError {
-    messages: Message[];
-    message: string;
-    constructor(messages: Message[]);
+    unexpected: string;
+    expected: string[];
+    state: State;
+    constructor(unexpected: string, expected: string[], state: State);
+    toString(): string;
+    merge(p2: ParseError): ParseError;
 }

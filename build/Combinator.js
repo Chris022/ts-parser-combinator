@@ -4,18 +4,18 @@ exports.manyTill = exports.hidden = exports.between = exports.or = exports.defau
 const Either_1 = require("./Either");
 const Parser_1 = require("./Parser");
 let choice = (parsers) => new Parser_1.Parser(input => {
-    let messages = [];
+    let errors = [];
     for (var i = 0; i < parsers.length; i++) {
         let pars_v = parsers[i].unParse(input);
         if (pars_v.isRight())
             return pars_v;
-        messages = [...messages, ...pars_v.value.messages];
+        errors.push(pars_v.value);
     }
-    return (0, Parser_1.createPE)(messages);
+    return (0, Either_1.Left)(errors.reduce((x, xs) => x.merge(xs)));
 });
 exports.choice = choice;
 let chooseBest = (parsers) => new Parser_1.Parser(input => {
-    let messages = [];
+    let errors = [];
     let best = null;
     for (var i = 0; i < parsers.length; i++) {
         let pars_v = parsers[i].unParse(input.clone());
@@ -27,10 +27,10 @@ let chooseBest = (parsers) => new Parser_1.Parser(input => {
                 best = [lenght, i];
             continue;
         }
-        messages = [...messages, ...pars_v.value.messages];
+        errors.push(pars_v.value);
     }
     if (best == null) {
-        return (0, Parser_1.createPE)(messages);
+        return (0, Either_1.Left)(errors.reduce((x, xs) => x.merge(xs)));
     }
     return parsers[best[1]].unParse(input);
 });
@@ -58,7 +58,7 @@ let or = (pa, pb) => new Parser_1.Parser(input => {
     let res2 = pb.unParse(input);
     if (res2.isRight())
         return res2;
-    return (0, Parser_1.createPE)([...res1.value.messages, ...res2.value.messages]);
+    return (0, Either_1.Left)(res1.value.merge(res2.value));
 });
 exports.or = or;
 let between = (open, close, p) => new Parser_1.Parser(input => {
@@ -76,7 +76,7 @@ let hidden = (parsers) => {
         for (var i = 0; i < parsers.length; i++) {
             let pars_v = parsers[i].unParse(input);
             if (pars_v.isLeft()) {
-                return (0, Parser_1.createPE)(pars_v.value.messages);
+                return (0, Either_1.Left)(pars_v.value);
             }
             let [new_input, _] = pars_v.value;
             state = new_input;
@@ -95,7 +95,7 @@ let manyTill = (p, end) => {
                 return (0, Parser_1.createPS)(current_state, matches);
             let p_res = p.unParse(current_state);
             if (p_res.isLeft())
-                return (0, Parser_1.createPE)(p_res.value.messages);
+                return (0, Either_1.Left)(p_res.value);
             let [new_input, value] = p_res.value;
             current_state = new_input;
             matches.push(value);
@@ -104,4 +104,3 @@ let manyTill = (p, end) => {
     });
 };
 exports.manyTill = manyTill;
-//TODO: Implement hidden (as manipulator)

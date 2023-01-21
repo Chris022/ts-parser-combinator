@@ -1,7 +1,7 @@
 import { Either } from "./Either";
-import { Message, ParseError } from "./Error";
+import { ParseError } from "./Error";
 import { State } from "./State";
-export declare function createPE<R>(messages: Message[]): Either<ParseError, R>;
+export declare function createPE<R>(state: State, unexpected: string, expected: string[] | string): Either<ParseError, R>;
 export declare function createPS<R>(state: State, val: R): Either<ParseError, [State, R]>;
 export declare class Parser<T> {
     private runParser;

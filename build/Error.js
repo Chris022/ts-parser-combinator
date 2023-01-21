@@ -20,21 +20,19 @@ class Unexpected {
 }
 exports.Unexpected = Unexpected;
 class ParseError {
-    constructor(messages) {
-        this.messages = messages;
-        let expected_msg = messages.filter(message => message instanceof Expected).map(msg => msg.message_text).join(" or ");
-        let unexpected_msg = messages.filter(message => message instanceof Unexpected).map(msg => msg.message_text).join(" or ");
-        let EOI_msg = messages.filter(message => message instanceof EndOfInputMessage).map(msg => msg.message_text);
-        this.message = "";
-        if (EOI_msg.length > 1) {
-            this.message = EOI_msg[0];
-        }
-        else if (unexpected_msg != "") {
-            this.message = "Unexpected: " + unexpected_msg + "  ";
-        }
-        if (expected_msg != "") {
-            this.message += "Expected: " + expected_msg;
-        }
+    constructor(unexpected, expected, state) {
+        this.unexpected = unexpected;
+        this.expected = expected;
+        this.state = state;
+    }
+    toString() {
+        return `syntax Error, unexpected ${this.unexpected}, expecting ${this.expected.join(" or ")}`;
+    }
+    merge(p2) {
+        //unexpected should be the same for both
+        //merge the expected arrays
+        //use the state from p2
+        return new ParseError(this.unexpected, [...this.expected, ...p2.expected], p2.state);
     }
 }
 exports.ParseError = ParseError;

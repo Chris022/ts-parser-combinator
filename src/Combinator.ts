@@ -1,23 +1,25 @@
 import { string } from "./Char";
 import { doEither, Left } from "./Either";
-import { EndOfInputMessage, Message, ParseError } from "./Error";
+import { ParseError } from "./Error";
 import { createPE, createPS, doParser, Parser } from "./Parser";
 import { State } from "./State";
 
 
 export let choice = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
-    let messages:Message[] = []
+    let errors:ParseError[] = []
 
     for(var i = 0; i < parsers.length; i++){
         let pars_v = parsers[i].unParse(input)
         if(pars_v.isRight()) return pars_v
-        messages = [...messages,...(pars_v.value as ParseError).messages]
+        errors.push(pars_v.value as ParseError)
     }
-    return createPE(messages)
+    return Left(
+        errors.reduce((x,xs)=>x.merge(xs))
+    )
 })
 
 export let chooseBest = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
-    let messages:Message[] = []
+    let errors:ParseError[] = []
     let best:null|[number,number] = null
     for(var i = 0; i < parsers.length; i++){
         let pars_v = parsers[i].unParse(input.clone())
@@ -27,10 +29,12 @@ export let chooseBest = <T>(parsers:Parser<T>[])=> new Parser<T>(input => {
             else if(lenght > best[0]) best = [lenght,i]
             continue
         }
-        messages = [...messages,...(pars_v.value as ParseError).messages]
+        errors.push(pars_v.value as ParseError)
     }
     if(best == null){
-        return createPE(messages)
+        return Left(
+            errors.reduce((x,xs)=>x.merge(xs))
+        )
     }
     return parsers[best[1]].unParse(input)
 })
@@ -55,7 +59,7 @@ export let or = <A,B>(pa:Parser<A>,pb:Parser<B>)=> new Parser<A|B>(input => {
     if(res1.isRight()) return res1
     let res2 = pb.unParse(input)
     if(res2.isRight()) return res2
-    return createPE([...(res1.value as ParseError).messages,...(res2.value as ParseError).messages])
+    return Left((res1.value as ParseError).merge((res2.value as ParseError)))
 })
 
 export let between = <A,B,C>(open:Parser<A>,close:Parser<B>,p:Parser<C>)=> new Parser<C>(input => {
@@ -73,7 +77,7 @@ export let hidden = (parsers:Parser<any>[]):Parser<string>=>{
         for(var i = 0; i < parsers.length; i++){
             let pars_v = parsers[i].unParse(input)
             if(pars_v.isLeft()){
-                return createPE((pars_v.value as ParseError).messages);
+                return Left((pars_v.value as ParseError));
             }
             let [new_input,_] = pars_v.value as [State,any]
             state = new_input
@@ -90,7 +94,7 @@ export let manyTill = <T,E>(p:Parser<T>,end:Parser<E>):Parser<T[]> => {
             let end_res = end.try().unParse(current_state)
             if(end_res.isRight()) return createPS(current_state,matches)
             let p_res = p.unParse(current_state)
-            if(p_res.isLeft()) return createPE((p_res.value as ParseError).messages)
+            if(p_res.isLeft()) return Left(p_res.value as ParseError)
             let [new_input,value] = p_res.value as [State,T]
             current_state = new_input
             matches.push(value)
@@ -98,5 +102,3 @@ export let manyTill = <T,E>(p:Parser<T>,end:Parser<E>):Parser<T[]> => {
         return createPS(current_state,matches)
     })
 }
-
-//TODO: Implement hidden (as manipulator)

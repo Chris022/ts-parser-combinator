@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.State = void 0;
 class State {
     constructor(unconsumed) {
+        this.input = unconsumed;
         this.consumed = "";
         this.position = 0;
         this.unconsumed = unconsumed;

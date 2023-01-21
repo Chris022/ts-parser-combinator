@@ -1,5 +1,5 @@
 import { doEither, Either,Left,Right } from "./Either";
-import { Message, ParseError } from "./Error";
+import { ParseError } from "./Error";
 import { State } from "./State";
 
 
@@ -8,8 +8,10 @@ class ParserValueError<L> extends Error{
 }
 
 //create Parse Error
-export function createPE<R>(messages:Message[]):Either<ParseError,R>{
-    return Left(new ParseError(messages))
+export function createPE<R>(state:State,unexpected:string,expected:string[] | string):Either<ParseError,R>{
+    if(Array.isArray(expected))
+        return Left(new ParseError(unexpected,expected,state))
+    return Left(new ParseError(unexpected,[expected],state))
 }
 //create Parse Succees
 export function createPS<R>(state:State,val:R):Either<ParseError,[State,R]>{
@@ -112,7 +114,7 @@ export class Parser<T>{
         return new Parser<T>(input => {
             let res = this.unParse(input.clone())
             if(res.isRight()) return res 
-            return createPE((res.value as ParseError).messages)
+            return Left(res.value as ParseError)
         })
     }
 
@@ -122,7 +124,7 @@ export class Parser<T>{
             if(res1.isRight()) return res1
             let res2 = p.unParse(input)
             if(res2.isRight()) return res2
-            return createPE([...(res1.value as ParseError).messages,...(res2.value as ParseError).messages])
+            return Left((res1.value as ParseError).merge((res2.value as ParseError)))
         })
     }
 
@@ -152,37 +154,10 @@ export function doParser<T>(func: (state:State,start:()=>number,end:()=>number)=
             return createPS(state,res)
         } catch (error) {
             if(error instanceof ParserValueError){
-                return createPE((error.left as ParseError).messages)
+                return Left((error.left as ParseError))
             }else{
                 throw error
             }
         }
     })
 }
-
-/*
-let many = <T>(p:Parser<T>):Parser<T[]> => {
-    return new Parser<T[]>(input => {
-        let current_state = input
-        let matches:T[] = []
-        let res = p.runParser(input)
-        if(res.isLeft()) return Left(res.value as ParseError)
-
-        while(1){
-            let res = p.runParser(input)
-            if(res.isLeft()) break
-            current_state = res.get()[0]
-            matches.push(res.get()[1])
-        }
-
-        return Right([current_state,matches])
-    })
-}
-
-let stringParser = (text:string) => new Parser<string>(input => {
-    if(input.length() < text.length) return createPE([new EndOfInputMessage(),new Expected(text)])
-    let input_text = input.consume(text.length)
-    if(input_text != text) return createPE([new Unexpected(input_text),new Expected(text)])
-    return createPS(input,text)
-})
-*/
