@@ -29,7 +29,30 @@ export class ParseError{
     constructor(public unexpected: string, public expected: string[], public state:State){}
 
     toString(){
-        return `syntax Error, unexpected ${this.unexpected}, expecting ${this.expected.join(" or ")}`
+
+        //use the sate to calculate the position
+        let line = 1
+        let column = 1
+        let counter = 0
+        while(true){
+            if(counter >= this.state.consumed.length){
+                break
+            }
+            let c = this.state.input.charAt(counter)
+            if(c == "\n"){
+                line++;
+                column = 1;
+            }else{
+                column++;
+            }
+
+            counter ++
+        }
+        
+        return `Syntax Error: line: ${line} column: ${column}
+\t\t unexpected ${this.unexpected}
+\t\t expecting ${this.expected.join(" or ")}
+        `
     }
 
     merge(p2:ParseError){

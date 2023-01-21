@@ -20,40 +20,45 @@ export let fail = <T>(state:State,unexpected:string,expected:string[] | string) 
 })
 
 export let oneOf = (char_array:string) => new Parser<string>(input => {
+    let o_input = input.clone()
     let char = input.consume(1)
     if(char_array.indexOf(char) != -1) return createPS(input,char)
     let unexpected = input.length() == 0? "EndOfInput" : char
-    return createPE(input,unexpected,[...char_array])
+    return createPE(o_input,unexpected,[...char_array])
 })
 
 export let noneOf = (char_array:string) => new Parser<string>(input => {
+    let o_input = input.clone()
     let char = input.consume(1)
     if(char_array.indexOf(char) == -1) return createPS(input,char)
     let unexpected = input.length() == 0? "EndOfInput" : char
-    return createPE(input,unexpected,["any char execpt: " +[...char_array][0],...[...char_array].slice(1)])
+    return createPE(o_input,unexpected,["any char execpt: " +[...char_array][0],...[...char_array].slice(1)])
 })
 
 export let letter = () => new Parser<string>(input => {
+    let o_input = input.clone()
     let char = input.consume(1)
     let alpha = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     if(alpha.indexOf(char.toLowerCase()) != -1) return createPS(input,char)
     let unexpected = input.length() == 0? "EndOfInput" : char
-    return createPE(input,unexpected,"any letter a-z,A-Z")
+    return createPE(o_input,unexpected,"any letter a-z,A-Z")
 })
 
 export let digit = () => new Parser<string>(input => {
+    let o_input = input.clone()
     let char = input.consume(1)
     let alpha = ["0","1","2","3","4","5","6","7","8","9"]
     if(alpha.indexOf(char) != -1) return createPS(input,char)
     let unexpected = input.length() == 0? "EndOfInput" : char
-    return createPE(input,unexpected,"any digit 0-9")
+    return createPE(o_input,unexpected,"any digit 0-9")
 })
 
 export let char = (char:string) => new Parser<string>(input => {
+    let o_input = input.clone()
     let char_i = input.consume(1)
     if(char == char_i) return createPS(input,char)
     let unexpected = input.length() == 0? "EndOfInput" : char_i
-    return createPE(input,unexpected,char)
+    return createPE(o_input,unexpected,char)
 })
 
 export let anyChar = () => new Parser<string>(input => {
@@ -62,10 +67,11 @@ export let anyChar = () => new Parser<string>(input => {
 })
 
 export let string = (text:string)  => new Parser<string>(input => {
+    let o_input = input.clone()
     let txt = input.consume(text.length)
     if(txt == text) return createPS(input,text)
     let unexpected = input.length() == 0? "EndOfInput" : txt
-    return createPE(input,unexpected,text)
+    return createPE(o_input,unexpected,text)
 })
 
  //returns the next n unconsumed characters without consuming them

@@ -26,6 +26,7 @@ export class State{
         let state =  new State(this.unconsumed)
         state.consumed = this.consumed
         state.position = this.position
+        state.input = this.input
         return state
     }
 }

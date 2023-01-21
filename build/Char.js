@@ -19,45 +19,50 @@ let fail = (state, unexpected, expected) => new Parser_1.Parser(input => {
 });
 exports.fail = fail;
 let oneOf = (char_array) => new Parser_1.Parser(input => {
+    let o_input = input.clone();
     let char = input.consume(1);
     if (char_array.indexOf(char) != -1)
         return (0, Parser_1.createPS)(input, char);
     let unexpected = input.length() == 0 ? "EndOfInput" : char;
-    return (0, Parser_1.createPE)(input, unexpected, [...char_array]);
+    return (0, Parser_1.createPE)(o_input, unexpected, [...char_array]);
 });
 exports.oneOf = oneOf;
 let noneOf = (char_array) => new Parser_1.Parser(input => {
+    let o_input = input.clone();
     let char = input.consume(1);
     if (char_array.indexOf(char) == -1)
         return (0, Parser_1.createPS)(input, char);
     let unexpected = input.length() == 0 ? "EndOfInput" : char;
-    return (0, Parser_1.createPE)(input, unexpected, ["any char execpt: " + [...char_array][0], ...[...char_array].slice(1)]);
+    return (0, Parser_1.createPE)(o_input, unexpected, ["any char execpt: " + [...char_array][0], ...[...char_array].slice(1)]);
 });
 exports.noneOf = noneOf;
 let letter = () => new Parser_1.Parser(input => {
+    let o_input = input.clone();
     let char = input.consume(1);
     let alpha = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
     if (alpha.indexOf(char.toLowerCase()) != -1)
         return (0, Parser_1.createPS)(input, char);
     let unexpected = input.length() == 0 ? "EndOfInput" : char;
-    return (0, Parser_1.createPE)(input, unexpected, "any letter a-z,A-Z");
+    return (0, Parser_1.createPE)(o_input, unexpected, "any letter a-z,A-Z");
 });
 exports.letter = letter;
 let digit = () => new Parser_1.Parser(input => {
+    let o_input = input.clone();
     let char = input.consume(1);
     let alpha = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     if (alpha.indexOf(char) != -1)
         return (0, Parser_1.createPS)(input, char);
     let unexpected = input.length() == 0 ? "EndOfInput" : char;
-    return (0, Parser_1.createPE)(input, unexpected, "any digit 0-9");
+    return (0, Parser_1.createPE)(o_input, unexpected, "any digit 0-9");
 });
 exports.digit = digit;
 let char = (char) => new Parser_1.Parser(input => {
+    let o_input = input.clone();
     let char_i = input.consume(1);
     if (char == char_i)
         return (0, Parser_1.createPS)(input, char);
     let unexpected = input.length() == 0 ? "EndOfInput" : char_i;
-    return (0, Parser_1.createPE)(input, unexpected, char);
+    return (0, Parser_1.createPE)(o_input, unexpected, char);
 });
 exports.char = char;
 let anyChar = () => new Parser_1.Parser(input => {
@@ -66,11 +71,12 @@ let anyChar = () => new Parser_1.Parser(input => {
 });
 exports.anyChar = anyChar;
 let string = (text) => new Parser_1.Parser(input => {
+    let o_input = input.clone();
     let txt = input.consume(text.length);
     if (txt == text)
         return (0, Parser_1.createPS)(input, text);
     let unexpected = input.length() == 0 ? "EndOfInput" : txt;
-    return (0, Parser_1.createPE)(input, unexpected, text);
+    return (0, Parser_1.createPE)(o_input, unexpected, text);
 });
 exports.string = string;
 //returns the next n unconsumed characters without consuming them
