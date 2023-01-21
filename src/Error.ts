@@ -50,7 +50,7 @@ export class ParseError{
         }
         
         return `Syntax Error: line: ${line} column: ${column}
-\t\t unexpected ${this.unexpected}
+\t\t unexpected ${this.unexpected.replace("\n","\\n")}
 \t\t expecting ${this.expected.join(" or ")}
         `
     }

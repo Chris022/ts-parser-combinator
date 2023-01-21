@@ -52,7 +52,15 @@ export class Parser<T>{
             let matches = []
             while(true){
                 let res = this.unParse(state)
-                if(res.isLeft()) break;
+
+                if(res.isLeft()){
+                    //check if any input was consumed
+                    let error_state = (res.value as ParseError).state
+                    //if something was consume, return the error directly
+                    if(error_state.length() < state.length()) return Left(res.value as ParseError)
+                    break;
+                } 
+
                 let [new_state,value] = res.value as [State,T]
                 state = new_state
                 matches.push(value)
@@ -67,7 +75,15 @@ export class Parser<T>{
             let matches = ""
             while(true){
                 let res = this.unParse(state)
-                if(res.isLeft()) break;
+
+                if(res.isLeft()){
+                    //check if any input was consumed
+                    let error_state = (res.value as ParseError).state
+                    //if something was consume, return the error directly
+                    if(error_state.length() < state.length()) return Left(res.value as ParseError)
+                    break;
+                } 
+                
                 let [new_state,value] = res.value as [State,T]
                 state = new_state
                 matches += value

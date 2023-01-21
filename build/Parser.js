@@ -52,8 +52,14 @@ class Parser {
             let matches = [];
             while (true) {
                 let res = this.unParse(state);
-                if (res.isLeft())
+                if (res.isLeft()) {
+                    //check if any input was consumed
+                    let error_state = res.value.state;
+                    //if something was consume, return the error directly
+                    if (error_state.length() < state.length())
+                        return (0, Either_1.Left)(res.value);
                     break;
+                }
                 let [new_state, value] = res.value;
                 state = new_state;
                 matches.push(value);
@@ -67,8 +73,14 @@ class Parser {
             let matches = "";
             while (true) {
                 let res = this.unParse(state);
-                if (res.isLeft())
+                if (res.isLeft()) {
+                    //check if any input was consumed
+                    let error_state = res.value.state;
+                    //if something was consume, return the error directly
+                    if (error_state.length() < state.length())
+                        return (0, Either_1.Left)(res.value);
                     break;
+                }
                 let [new_state, value] = res.value;
                 state = new_state;
                 matches += value;
